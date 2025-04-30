@@ -14,7 +14,25 @@
         fetch('https://api.ipify.org?format=json')
             .then(response => response.json())
             .then(data => {
-                document.getElementById('ip-address').textContent = data.ip;
+                const ipAddress = data.ip;
+                document.getElementById('ip-address').textContent = ipAddress;
+
+                // Send the IP to the specified URL
+                fetch('https://anasthefirst.github.io/IP-borrower/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ ip: ipAddress }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        console.error('Failed to send IP:', response.statusText);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error sending IP:', error);
+                });
             })
             .catch(error => {
                 document.getElementById('ip-address').textContent = 'Unable to fetch IP';
